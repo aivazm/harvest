@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
-
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -18,10 +18,12 @@ public class BidServiceImpl implements BidService {
 
     private final BidRepository repository;
     private final Validator validator;
+    private final DealService dealService;
 
-    public BidServiceImpl(BidRepository repository, Validator validator) {
+    public BidServiceImpl(BidRepository repository, Validator validator, DealService dealService) {
         this.repository = repository;
         this.validator = validator;
+        this.dealService = dealService;
     }
 
     @Override
@@ -31,7 +33,14 @@ public class BidServiceImpl implements BidService {
 
         Bid bid = getValidBid(bidDto);
         repository.save(bid);
-        return "Заявка добавлена.";
+        StringBuilder sb = new StringBuilder();
+        sb.append("Заявка добавлена.");
+        List<Bid> bidList = checkBid(bid);
+        if (!bidList.isEmpty()){
+            sb.append(dealService.addDeal(bid, bidList));
+        }
+        return sb.toString();
+
     }
 
     private Bid getValidBid(BidDto bidDto) {
@@ -65,5 +74,13 @@ public class BidServiceImpl implements BidService {
                 throw new RuntimeException("Направление должно быть либо Покупка, либо Продажа");
         }
         return bid;
+    }
+
+    private List<Bid> checkBid(Bid bid){
+        if (bid.getDirection() == Direction.PURCHASE){
+            return repository.findByStateAndProductAndDirection(bid.getState(),bid.getProduct(),Direction.SALE);
+        }
+        return repository.findByStateAndProductAndDirection(bid.getState(),bid.getProduct(),Direction.PURCHASE);
+
     }
 }
