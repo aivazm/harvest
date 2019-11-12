@@ -16,12 +16,12 @@ import java.util.Set;
 @Service
 public class BidServiceImpl implements BidService {
 
-    private final BidRepository repository;
+    private final BidRepository bidRepository;
     private final Validator validator;
     private final DealService dealService;
 
-    public BidServiceImpl(BidRepository repository, Validator validator, DealService dealService) {
-        this.repository = repository;
+    public BidServiceImpl(BidRepository bidRepository, Validator validator, DealService dealService) {
+        this.bidRepository = bidRepository;
         this.validator = validator;
         this.dealService = dealService;
     }
@@ -32,15 +32,14 @@ public class BidServiceImpl implements BidService {
             return "Пустое тело";
 
         Bid bid = getValidBid(bidDto);
-        repository.save(bid);
+        bidRepository.save(bid);
         StringBuilder sb = new StringBuilder();
         sb.append("Заявка добавлена.");
         List<Bid> bidList = checkBid(bid);
-        if (!bidList.isEmpty()){
+        if (!bidList.isEmpty()) {
             sb.append(dealService.addDeal(bid, bidList));
         }
         return sb.toString();
-
     }
 
     private Bid getValidBid(BidDto bidDto) {
@@ -60,7 +59,7 @@ public class BidServiceImpl implements BidService {
                 .product(bidDto.getProduct())
                 .quantity(bidDto.getQuantity())
                 .price(bidDto.getPrice())
-                .State(BidState.ACTIVE)
+                .state(BidState.ACTIVE)
                 .date(LocalDateTime.now())
                 .build();
         switch (bidDto.getDirection()) {
@@ -76,11 +75,11 @@ public class BidServiceImpl implements BidService {
         return bid;
     }
 
-    private List<Bid> checkBid(Bid bid){
-        if (bid.getDirection() == Direction.PURCHASE){
-            return repository.findAllByStateAndProductAndDirection(BidState.ACTIVE,bid.getProduct(),Direction.SALE);
+    private List<Bid> checkBid(Bid bid) {
+        if (bid.getDirection() == Direction.PURCHASE) {
+            return bidRepository.findAllByStateAndProductAndDirection(BidState.ACTIVE, bid.getProduct(), Direction.SALE);
         }
-        return repository.findAllByStateAndProductAndDirection(BidState.ACTIVE,bid.getProduct(),Direction.PURCHASE);
+        return bidRepository.findAllByStateAndProductAndDirection(BidState.ACTIVE, bid.getProduct(), Direction.PURCHASE);
 
     }
 }

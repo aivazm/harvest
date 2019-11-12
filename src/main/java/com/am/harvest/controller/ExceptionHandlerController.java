@@ -10,7 +10,6 @@ public class ExceptionHandlerController {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> exception(RuntimeException ex) {
-//        log.log(Level.SEVERE, ex.getClass().getSimpleName() + ": " + ex.getMessage(), ex);
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
