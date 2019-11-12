@@ -51,5 +51,13 @@ public class Bid {
         return id != null ? id.hashCode() : 0;
     }
 
-
+    @Override
+    public String toString() {
+        return "Bid{" +
+                "direction=" + direction +
+                ", product='" + product + '\'' +
+                ", quantity=" + quantity +
+                ", price=" + price +
+                '}';
+    }
 }

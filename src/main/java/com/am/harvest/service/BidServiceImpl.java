@@ -5,6 +5,9 @@ import com.am.harvest.model.Bid;
 import com.am.harvest.model.BidState;
 import com.am.harvest.model.Direction;
 import com.am.harvest.repository.BidRepository;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+
 import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolation;
@@ -19,8 +22,11 @@ public class BidServiceImpl implements BidService {
     private final BidRepository bidRepository;
     private final Validator validator;
     private final DealService dealService;
+    private static final Logger logger = LoggerFactory.getLogger(BidServiceImpl.class);
 
-    public BidServiceImpl(BidRepository bidRepository, Validator validator, DealService dealService) {
+    public BidServiceImpl(BidRepository bidRepository,
+                          Validator validator,
+                          DealService dealService) {
         this.bidRepository = bidRepository;
         this.validator = validator;
         this.dealService = dealService;
@@ -33,6 +39,7 @@ public class BidServiceImpl implements BidService {
 
         Bid bid = getValidBid(bidDto);
         bidRepository.save(bid);
+        logger.info("Добавлена заявка {}", bid.toString());
         StringBuilder sb = new StringBuilder();
         sb.append("Заявка добавлена.");
         List<Bid> bidList = checkBid(bid);
