@@ -78,9 +78,9 @@ public class BidServiceImpl implements BidService {
 
     private List<Bid> checkBid(Bid bid){
         if (bid.getDirection() == Direction.PURCHASE){
-            return repository.findByStateAndProductAndDirection(bid.getState(),bid.getProduct(),Direction.SALE);
+            return repository.findAllByStateAndProductAndDirection(BidState.ACTIVE,bid.getProduct(),Direction.SALE);
         }
-        return repository.findByStateAndProductAndDirection(bid.getState(),bid.getProduct(),Direction.PURCHASE);
+        return repository.findAllByStateAndProductAndDirection(BidState.ACTIVE,bid.getProduct(),Direction.PURCHASE);
 
     }
 }

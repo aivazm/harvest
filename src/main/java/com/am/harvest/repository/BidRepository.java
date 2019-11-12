@@ -14,13 +14,13 @@ import java.util.List;
 @Repository
 public interface BidRepository extends CrudRepository<Bid, Long> {
     @Modifying
-    @Query("FROM Bid b WHERE b.state=:state AND b.product=:product AND b.direction=:direction")
-    List<Bid> findByStateAndProductAndDirection(@Param("state") BidState state,
-                                                @Param("product")String product,
-                                                @Param ("direction")Direction direction);
+//    @Query("FROM Bid b WHERE b.state=:state AND b.product=:product AND b.direction=:direction")
+//    List<Bid> findAllByStateAndProductAndDirection(@Param("state") BidState state,
+//                                                @Param("product")String product,
+//                                                @Param ("direction")Direction direction);
 
 
-//    List<Bid> findByStateAndProductAndDirection(BidState state, String product, Direction direction);
+    List<Bid> findAllByStateAndProductAndDirection(BidState state, String product, Direction direction);
 
 //    @Query("from Auction a join a.category c where c.name=:categoryName")
 //    public Iterable<Auction> findByCategory(@Param("categoryName") String categoryName);
