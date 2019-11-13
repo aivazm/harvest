@@ -5,6 +5,7 @@ target/
 !**/src/test/**
 build/
 .mvn/
+*.log
 
 ### STS ###
 .apt_generated
