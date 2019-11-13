@@ -11,6 +11,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,7 +24,7 @@ public class Bid {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    //    @NotBlank(message = "Direction cannot be empty")
+//    @NotBlank(message = "Direction cannot be empty")
     @Enumerated(EnumType.STRING)
     private Direction direction;
     //    @NotBlank(message = "Product cannot be empty")
@@ -51,13 +52,5 @@ public class Bid {
         return id != null ? id.hashCode() : 0;
     }
 
-    @Override
-    public String toString() {
-        return "Bid{" +
-                "direction=" + direction +
-                ", product='" + product + '\'' +
-                ", quantity=" + quantity +
-                ", price=" + price +
-                '}';
-    }
+
 }

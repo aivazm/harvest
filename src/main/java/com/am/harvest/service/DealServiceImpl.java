@@ -6,6 +6,8 @@ import com.am.harvest.model.Deal;
 import com.am.harvest.model.Direction;
 import com.am.harvest.repository.BidRepository;
 import com.am.harvest.repository.DealRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -19,6 +21,7 @@ public class DealServiceImpl implements DealService {
 
     private final BidRepository bidRepo;
     private final DealRepository dealRepo;
+    private static final Logger logger = LoggerFactory.getLogger(DealServiceImpl.class);
 
     public DealServiceImpl(BidRepository bidRepo, DealRepository dealRepo) {
         this.bidRepo = bidRepo;
@@ -29,25 +32,33 @@ public class DealServiceImpl implements DealService {
     public String addDeal(Bid currentBid, List<Bid> bidList) {
         Bid purposeBid;
         Deal deal;
-        if (currentBid.getDirection() == Direction.PURCHASE) {
-            purposeBid = getMinBid(bidList);
-            if (currentBid.getPrice() >= purposeBid.getPrice()) {
-                deal = createDeal(currentBid, purposeBid);
-                deal.setPrice(currentBid.getPrice());
-                dealRepo.save(deal);
-                return "\nСделка совершена.\nТекущая заявка закрыта.";
-            }
-        } else {
-            purposeBid = getMaxBid(bidList);
-            if (currentBid.getPrice() <= purposeBid.getPrice()) {
-                deal = createDeal(currentBid, purposeBid);
-                deal.setPrice(purposeBid.getPrice());
-                dealRepo.save(deal);
-                return "\nСделка совершена.\nТекущая заявка закрыта.";
-            }
+        switch (currentBid.getDirection()) {
+            case PURCHASE:
+                purposeBid = getMinBid(bidList);
+                if (currentBid.getPrice() >= purposeBid.getPrice()) {
+                    deal = createDeal(currentBid, purposeBid);
+                    deal.setPrice(currentBid.getPrice());
+                    saveDeal(deal, currentBid, purposeBid);
+                    return "\nСделка совершена.\nТекущая заявка закрыта.";
+                }
+            case SALE:
+                purposeBid = getMaxBid(bidList);
+                if (currentBid.getPrice() <= purposeBid.getPrice()) {
+                    deal = createDeal(currentBid, purposeBid);
+                    deal.setPrice(purposeBid.getPrice());
+                    saveDeal(deal, currentBid, purposeBid);
+                    return "\nСделка совершена.\nТекущая заявка закрыта.";
+                }
+            default:
+                return "";
         }
-        return "";
+    }
 
+    private void saveDeal(Deal deal, Bid currentBid, Bid purposeBid) {
+        dealRepo.save(deal);
+        logger.info("Совершена сделка {}", deal.toString());
+        logger.info("Закрыта заявка {}", currentBid.toString());
+        logger.info("Закрыта заявка {}", purposeBid.toString());
     }
 
     private Deal createDeal(Bid currentBid, Bid purposeBid) {

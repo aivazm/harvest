@@ -50,6 +50,8 @@ public class BidServiceImpl implements BidService {
     }
 
     private Bid getValidBid(BidDto bidDto) {
+        final String OVER_MILLION = "Итоговая сумма по заявке не должна превышать 1 000 000";
+
         Set<ConstraintViolation<BidDto>> validate = validator.validate(bidDto);
         if (!validate.isEmpty()) {
             StringBuilder message = new StringBuilder();
@@ -57,10 +59,12 @@ public class BidServiceImpl implements BidService {
                 message.append(violation.getMessage());
                 message.append("; ");
             }
+            logger.error("Ошибка валидации заявки {}", bidDto.toString() + " - " + message.toString().trim());
             throw new RuntimeException(message.toString().trim());
         }
         if (bidDto.getQuantity() * bidDto.getPrice() > 1_000_000) {
-            throw new RuntimeException("Итоговая сумма по заявке не должна превышать 1 000 000");
+            logger.error("Ошибка валидации заявки: {}", bidDto.toString() + " - " + OVER_MILLION);
+            throw new RuntimeException(OVER_MILLION);
         }
         Bid bid = Bid.builder()
                 .product(bidDto.getProduct())
@@ -77,8 +81,9 @@ public class BidServiceImpl implements BidService {
                 bid.setDirection(Direction.SALE);
                 break;
             default:
-                throw new RuntimeException("Направление должно быть либо Покупка, либо Продажа");
+                logger.info("О этой хуйне никто не узнает");
         }
+
         return bid;
     }
 
