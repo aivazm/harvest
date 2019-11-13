@@ -6,6 +6,7 @@ target/
 build/
 .mvn/
 *.log
+*.xlsx
 
 ### STS ###
 .apt_generated
