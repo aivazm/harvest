@@ -62,7 +62,7 @@ public class BidServiceImpl implements BidService {
             logger.error("Ошибка валидации заявки {}", bidDto.toString() + " - " + message.toString().trim());
             throw new RuntimeException(message.toString().trim());
         }
-        if (bidDto.getQuantity() * bidDto.getPrice() > 1_000_000) {
+        if (bidDto.getQuantity() * bidDto.getPrice().intValue() > 1_000_000) {
             logger.error("Ошибка валидации заявки: {}", bidDto.toString() + " - " + OVER_MILLION);
             throw new RuntimeException(OVER_MILLION);
         }

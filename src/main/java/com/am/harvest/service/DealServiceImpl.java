@@ -35,7 +35,7 @@ public class DealServiceImpl implements DealService {
         switch (currentBid.getDirection()) {
             case PURCHASE:
                 purposeBid = getMinBid(bidList);
-                if (currentBid.getPrice() >= purposeBid.getPrice()) {
+                if (currentBid.getPrice().intValue() >= purposeBid.getPrice().intValue()) {
                     deal = createDeal(currentBid, purposeBid);
                     deal.setPrice(currentBid.getPrice());
                     saveDeal(deal, currentBid, purposeBid);
@@ -43,7 +43,7 @@ public class DealServiceImpl implements DealService {
                 }
             case SALE:
                 purposeBid = getMaxBid(bidList);
-                if (currentBid.getPrice() <= purposeBid.getPrice()) {
+                if (currentBid.getPrice().intValue() <= purposeBid.getPrice().intValue()) {
                     deal = createDeal(currentBid, purposeBid);
                     deal.setPrice(purposeBid.getPrice());
                     saveDeal(deal, currentBid, purposeBid);
@@ -73,7 +73,7 @@ public class DealServiceImpl implements DealService {
     }
 
     private Bid getMinBid(List<Bid> bidList) {
-        Optional<Bid> minOptional = bidList.stream().min(Comparator.comparingInt(Bid::getPrice));
+        Optional<Bid> minOptional = bidList.stream().min(Comparator.comparingInt(bid -> bid.getPrice().intValue()));
         List<Bid> minPriceList = bidList.stream().filter(e -> e.getPrice().equals(minOptional.get().getPrice())).collect(Collectors.toList());
         if (minPriceList.size() > 1) {
             return minPriceList.stream().min(Comparator.comparing(Bid::getDate)).get();
@@ -82,7 +82,7 @@ public class DealServiceImpl implements DealService {
     }
 
     private Bid getMaxBid(List<Bid> bidList) {
-        Optional<Bid> maxOptional = bidList.stream().max(Comparator.comparingInt(Bid::getPrice));
+        Optional<Bid> maxOptional = bidList.stream().max(Comparator.comparingInt(bid -> bid.getPrice().intValue()));
         List<Bid> maxPriceList = bidList.stream().filter(e -> e.getPrice().equals(maxOptional.get().getPrice())).collect(Collectors.toList());
         if (maxPriceList.size() > 1) {
             return maxPriceList.stream().min(Comparator.comparing(Bid::getDate)).get();

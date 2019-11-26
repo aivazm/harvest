@@ -96,7 +96,7 @@ public class ReportServiceImpl implements ReportService {
         Cell quantity = row.createCell(3);
         quantity.setCellValue(bid.getQuantity());
         Cell price = row.createCell(4);
-        price.setCellValue(bid.getPrice());
+        price.setCellValue(bid.getPrice().intValue());
         Cell state = row.createCell(5);
         state.setCellValue(bid.getState().toString());
         Cell date = row.createCell(6);
@@ -112,7 +112,7 @@ public class ReportServiceImpl implements ReportService {
         Cell quantity = row.createCell(2);
         quantity.setCellValue(deal.getQuantity());
         Cell price = row.createCell(3);
-        price.setCellValue(deal.getPrice());
+        price.setCellValue(deal.getPrice().intValue());
         Cell date = row.createCell(4);
         date.setCellValue(deal.getDate().toString());
     }
