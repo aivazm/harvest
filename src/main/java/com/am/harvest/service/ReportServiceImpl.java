@@ -18,7 +18,9 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class ReportServiceImpl implements ReportService {
@@ -45,15 +47,7 @@ public class ReportServiceImpl implements ReportService {
         File file = new File("Bids.xlsx");
         try {
             book.write(new FileOutputStream(file));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
             book.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
             return new ByteArrayResource(Files.readAllBytes(Paths.get(file.getName())));
         } catch (IOException e) {
             throw new RuntimeException("Ошибка при формировании отчета: " + e.getMessage());
@@ -74,15 +68,7 @@ public class ReportServiceImpl implements ReportService {
         File file = new File("Deals.xlsx");
         try {
             book.write(new FileOutputStream(file));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
             book.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
             return new ByteArrayResource(Files.readAllBytes(Paths.get(file.getName())));
         } catch (IOException e) {
             throw new RuntimeException("Ошибка при формировании отчета: " + e.getMessage());
@@ -91,14 +77,12 @@ public class ReportServiceImpl implements ReportService {
 
     private void addHeaders(Sheet sheet, Class clazz) {
         Row headers = sheet.createRow(0);
-        int colCount = 0;
+        AtomicInteger count = new AtomicInteger();
         Field[] fields = clazz.getDeclaredFields();
-        for (Field field : fields) {
-            Cell cell = headers.createCell(colCount);
-            cell.setCellValue(field.getName().toUpperCase());
-            colCount++;
-        }
-
+        Arrays.stream(fields).forEach(e -> {
+            Cell cell = headers.createCell(count.getAndIncrement());
+            cell.setCellValue(e.getName().toUpperCase());
+        });
     }
 
     private void addBidRow(Sheet sheet, Bid bid) {
@@ -112,7 +96,7 @@ public class ReportServiceImpl implements ReportService {
         Cell quantity = row.createCell(3);
         quantity.setCellValue(bid.getQuantity());
         Cell price = row.createCell(4);
-        price.setCellValue(bid.getPrice());
+        price.setCellValue(bid.getPrice().intValue());
         Cell state = row.createCell(5);
         state.setCellValue(bid.getState().toString());
         Cell date = row.createCell(6);
@@ -128,7 +112,7 @@ public class ReportServiceImpl implements ReportService {
         Cell quantity = row.createCell(2);
         quantity.setCellValue(deal.getQuantity());
         Cell price = row.createCell(3);
-        price.setCellValue(deal.getPrice());
+        price.setCellValue(deal.getPrice().intValue());
         Cell date = row.createCell(4);
         date.setCellValue(deal.getDate().toString());
     }

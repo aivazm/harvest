@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -23,6 +24,6 @@ public class Deal {
     private Long id;
     private String product;
     private Integer quantity;
-    private Integer price;
+    private BigDecimal price;
     private LocalDateTime date;
 }

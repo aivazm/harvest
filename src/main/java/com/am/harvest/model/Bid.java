@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -32,7 +33,7 @@ public class Bid {
     //    @NotBlank(message = "Quantity cannot be empty")
     private Integer quantity;
     //    @NotBlank(message = "Price cannot be empty")
-    private Integer price;
+    private BigDecimal price;
     @Enumerated(EnumType.STRING)
     private BidState state;
     private LocalDateTime date;

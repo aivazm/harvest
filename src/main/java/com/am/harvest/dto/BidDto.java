@@ -13,6 +13,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor
@@ -36,7 +37,7 @@ public class BidDto {
     @Min(value = 1, message = "Цена должна быть от 1 до 999 999")
     @Max(value = 999999, message = "Цена должна быть от 1 до 999 999")
     @Digits(integer=5, fraction=0, message = "Не более 999 999")
-    private Integer price;
+    private BigDecimal price;
 
     @Override
     public String toString() {
